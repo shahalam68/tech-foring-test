@@ -45,8 +45,18 @@ app.post("/login", (req, res) => {
             "jwt-refresh-token-secret-key",
             { expiresIn: "500m" }
           );
-          res.cookie("accessToken", accessToken, { maxAge: 300000, httpOnly: true, secure: true, sameSite: "strict" });
-          res.cookie("refreshToken", refreshToken, { maxAge: 3000000, httpOnly: true, secure: true, sameSite: "strict" });
+          res.cookie("accessToken", accessToken, {
+            maxAge: 300000,
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+          });
+          res.cookie("refreshToken", refreshToken, {
+            maxAge: 3000000,
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+          });
           return res.json({ Login: true });
         } else {
           return res.json({ Login: false, message: "Invalid password" });
@@ -90,7 +100,12 @@ const renewToken = (req, res) => {
           "jwt-access-token-secret-key",
           { expiresIn: "50m" }
         );
-        res.cookie("accessToken", accessToken, { maxAge: 300000, httpOnly: true, secure: true, sameSite: "strict" });
+        res.cookie("accessToken", accessToken, {
+          maxAge: 300000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
         exist = true;
       }
     });
@@ -106,12 +121,16 @@ app.post("/create/job", verifyUser, (req, res) => {
   const { category, role } = req.body;
   JobsModel.create({ category, role })
     .then((job) => res.json({ success: true, job }))
-    .catch((err) => res.status(500).json({ success: false, message: err.message }));
+    .catch((err) =>
+      res.status(500).json({ success: false, message: err.message })
+    );
 });
 app.get("/jobs", verifyUser, (req, res) => {
   JobsModel.find()
     .then((jobs) => res.json(jobs))
-    .catch((err) => res.status(500).json({ success: false, message: err.message }));
+    .catch((err) =>
+      res.status(500).json({ success: false, message: err.message })
+    );
 });
 
 app.listen(5000, () => {
