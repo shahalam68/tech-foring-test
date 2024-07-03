@@ -1,26 +1,17 @@
+
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
-import axios from "axios";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  axios.defaults.withCredentials = true;
-  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios
-      .post("http://localhost:5000/login", { email, password })
-      .then((res) => {
-        // console.log("login responce", res);
-        if (res.data.Login) {
-          navigate("/");
-        } else {
-          navigate("/");
-        }
-      })
-      .catch((err) => console.log(err));
+    login(email, password);
   };
 
   return (
@@ -79,7 +70,7 @@ const Login = () => {
             Login
           </Button>
           <Typography variant="p" component="h5" gutterBottom>
-            Don not have account please{" "}
+            Don’t have an account?{" "}
             <span className="text-[#182A59] ">
               <Link to="/register">SignUp</Link>
             </span>

@@ -55,7 +55,7 @@ app.post("/login", (req, res) => {
             { expiresIn: "500m" }
           );
           res.cookie("accessToken", accessToken, {
-            maxAge: 300000,
+            maxAge: 3000000,
             httpOnly: true,
             secure: true,
             sameSite: "strict",
@@ -66,7 +66,7 @@ app.post("/login", (req, res) => {
             secure: true,
             sameSite: "strict",
           });
-          return res.json({ Login: true });
+          return res.json({ Login: true, user: { name: user.name, email: user.email }, accessToken });
         } else {
           return res.json({ Login: false, message: "Invalid password" });
         }
@@ -121,10 +121,6 @@ const renewToken = (req, res) => {
   }
   return exist;
 };
-
-app.get("/dashboard", verifyUser, (req, res) => {
-  return res.json({ valid: true, message: "Authorized" });
-});
 
 app.post("/create/job", verifyUser, (req, res) => {
   const { category, role } = req.body;

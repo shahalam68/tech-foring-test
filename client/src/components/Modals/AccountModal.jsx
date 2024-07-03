@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Button } from "@mui/base";
+import { AuthContext } from "../../AuthContext";
 
 const style = {
   position: "absolute",
@@ -21,6 +22,10 @@ const style = {
 
 export default function AccountModal({ open, setOpen }) {
   const handleClose = () => setOpen(false);
+
+  const {user} = React.useContext(AuthContext);
+  console.log("user from modal",user);
+  const {logout} = React.useContext(AuthContext);
 
   return (
     <Modal
@@ -41,13 +46,13 @@ export default function AccountModal({ open, setOpen }) {
           </Box>
           <Box>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Soykot Alam
+              {user.name}
             </Typography>
-            <Typography>a.k.mshahalam68@gmail.com</Typography>
+            <Typography>{user.email}</Typography>
           </Box>
         </Box>
         <Box sx={{textAlign:"center" ,mt:"20px"}}>
-          <Button ><Typography sx={{backgroundColor:"#182A59",color:"#fff",paddingLeft:'10px',paddingRight:"10px",borderRadius:"3px"}}>Log Out</Typography></Button>
+          <Button onClick={logout} ><Typography sx={{backgroundColor:"#182A59",color:"#fff",paddingLeft:'10px',paddingRight:"10px",borderRadius:"3px"}}>Log Out</Typography></Button>
         </Box>
       </Box>
     </Modal>

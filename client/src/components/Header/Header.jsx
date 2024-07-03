@@ -3,15 +3,19 @@ import logo from "../../assets/logo.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useState } from "react";
 import AccountModal from "../Modals/AccountModal";
+import CreateJobModal from "../Modals/CreateJobModal";
 
 const Header = () => {
-  const [open, setOpen] = useState(false);
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
+  const [createJobModalOpen, setCreateJobModalOpen] = useState(false);
 
-  const handleOpen = () => {
-    setOpen(true);
+  const handleAccountModalOpen = () => {
+    setAccountModalOpen(true);
   };
 
-  
+  const handleCreateJobModalOpen = () => {
+    setCreateJobModalOpen(true);
+  };
 
   return (
     <>
@@ -40,12 +44,19 @@ const Header = () => {
           </Box>
         </Box>
         <Box>
-          <Button onClick={handleOpen}>
+          <Button
+            sx={{ backgroundColor: "#fff" }}
+            onClick={handleCreateJobModalOpen}
+          >
+            <Typography>Create Job</Typography>
+          </Button>
+          <Button onClick={handleAccountModalOpen}>
             <AccountCircleIcon sx={{ width: "40px", height: "40px" }} />
           </Button>
         </Box>
       </Box>
-      <AccountModal open={open} setOpen={setOpen} />
+      <AccountModal open={accountModalOpen} setOpen={setAccountModalOpen} />
+      <CreateJobModal open={createJobModalOpen} setOpen={setCreateJobModalOpen} />
     </>
   );
 };
