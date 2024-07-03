@@ -3,7 +3,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import StudentModel from "./models/Student.js";
+import UserModel from "./models/User.js"; 
 import JobsModel from "./models/Jobs.js";
 
 const app = express();
@@ -24,14 +24,23 @@ mongoose.connect("mongodb://127.0.0.1:27017/school", {
 
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
-  StudentModel.create({ name, email, password })
-    .then((user) => res.json(user))
-    .catch((err) => res.json(err));
+  
+  UserModel.findOne({ email })
+    .then((user) => {
+      if (user) {
+        return res.json({ success: false, message: "Email already exists" });
+      } else {
+        UserModel.create({ name, email, password })
+          .then((newUser) => res.json({ success: true, user: newUser }))
+          .catch((err) => res.status(500).json({ success: false, message: err.message }));
+      }
+    })
+    .catch((err) => res.status(500).json({ success: false, message: err.message }));
 });
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  StudentModel.findOne({ email })
+  UserModel.findOne({ email })
     .then((user) => {
       if (user) {
         if (user.password === password) {
@@ -119,18 +128,26 @@ app.get("/dashboard", verifyUser, (req, res) => {
 
 app.post("/create/job", verifyUser, (req, res) => {
   const { category, role } = req.body;
-  JobsModel.create({ category, role })
-    .then((job) => res.json({ success: true, job }))
-    .catch((err) =>
-      res.status(500).json({ success: false, message: err.message })
-    );
+  JobsModel.findOne({ category })
+    .then((job) => {
+      if (job) {
+        job.roles.push(role);
+        job.save()
+          .then((updatedJob) => res.json({ success: true, job: updatedJob }))
+          .catch((err) => res.status(500).json({ success: false, message: err.message }));
+      } else {
+        JobsModel.create({ category, roles: [role] })
+          .then((newJob) => res.json({ success: true, job: newJob }))
+          .catch((err) => res.status(500).json({ success: false, message: err.message }));
+      }
+    })
+    .catch((err) => res.status(500).json({ success: false, message: err.message }));
 });
+
 app.get("/jobs", verifyUser, (req, res) => {
   JobsModel.find()
     .then((jobs) => res.json(jobs))
-    .catch((err) =>
-      res.status(500).json({ success: false, message: err.message })
-    );
+    .catch((err) => res.status(500).json({ success: false, message: err.message }));
 });
 
 app.listen(5000, () => {

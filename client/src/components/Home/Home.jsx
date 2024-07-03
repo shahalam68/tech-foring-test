@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Box, IconButton, TextField, InputAdornment } from "@mui/material";
 import Header from "../Header/Header";
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,7 +7,7 @@ import Jobs from "../Jobs/Jobs";
 
 const Home = () => {
   return (
-    <div>
+    <div className="bg-[rgba(0, 0, 0, 0.87)]">
       <Header />
       <Box
         sx={{
