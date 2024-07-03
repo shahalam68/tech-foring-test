@@ -145,6 +145,43 @@ app.get("/jobs", verifyUser, (req, res) => {
     .then((jobs) => res.json(jobs))
     .catch((err) => res.status(500).json({ success: false, message: err.message }));
 });
+app.delete("/delete/job/role/:id", verifyUser, (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  JobsModel.findByIdAndUpdate(
+    id,
+    { $pull: { roles: role } },
+    { new: true }
+  )
+  .then((updatedJob) => {
+    if (updatedJob) {
+      res.json({ success: true, message: "Role deleted successfully", job: updatedJob });
+    } else {
+      res.status(404).json({ success: false, message: "Job category not found" });
+    }
+  })
+  .catch((err) => res.status(500).json({ success: false, message: err.message }));
+});
+app.put("/update/job/role/:id", verifyUser, (req, res) => {
+  const { id } = req.params;
+  const { oldRole, newRole } = req.body;
+
+  JobsModel.findOneAndUpdate(
+    { _id: id, roles: oldRole },
+    { $set: { "roles.$": newRole } },
+    { new: true }
+  )
+  .then((updatedJob) => {
+    if (updatedJob) {
+      res.json({ success: true, message: "Role updated successfully", job: updatedJob });
+    } else {
+      res.status(404).json({ success: false, message: "Job category or role not found" });
+    }
+  })
+  .catch((err) => res.status(500).json({ success: false, message: err.message }));
+});
+
 
 app.listen(5000, () => {
   console.log("Server is running");
